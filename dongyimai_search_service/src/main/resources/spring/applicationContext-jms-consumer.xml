@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供-->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+            <property name="brokerURL" value="tcp://192.168.188.146:61616"></property>
+
+    </bean>
+
+
+    <!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="targetConnectionFactory"/>
+    </bean>
+
+<!--  处理数据导入到索引库   -->
+    <!-- 设置点对点的发送 以及队列名称（对列名称必须跟发送端一致不然接收不到）   -->
+    <bean id="queueSolrDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai_queue_slor"></constructor-arg>
+    </bean>
+
+    <bean id="itemSearchListener" class="com.sun.search.listener.impl.ItemSearchListener">
+
+    </bean>
+
+    <!--  消息监听容器 -->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destination" ref="queueSolrDestination" />
+        <property name="messageListener" ref="itemSearchListener" />
+    </bean>
+
+
+    <!--  处理数据从索引库中删除   -->
+    <bean id="queueSolrDeleteDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai_queue_solr_delete"/>
+    </bean>
+
+    <bean id="itemDeleteListener" class="com.sun.search.listener.impl.ItemDeleteListener">
+    </bean>
+
+    <!--  消息监听容器 -->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destination" ref="queueSolrDeleteDestination" />
+        <property name="messageListener" ref="itemDeleteListener" />
+    </bean>
+
+
+
+
+</beans>

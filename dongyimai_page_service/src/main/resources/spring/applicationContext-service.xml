@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--    &lt;!&ndash;使用dubbo发布服务的时候，默认服务提供的端口是20880&ndash;&gt;-->
+<!--    <dubbo:protocol name="dubbo" port="20884"></dubbo:protocol>-->
+<!--    &lt;!&ndash;告诉dubbo 应用的名字叫什么&ndash;&gt;-->
+<!--    <dubbo:application name="dongyimai_page_service"/>-->
+<!--    &lt;!&ndash;配置注册中心zookeeper的地址&ndash;&gt;-->
+<!--    <dubbo:registry address="zookeeper://192.168.188.128:2181"/>-->
+<!--    &lt;!&ndash;dubbo扫描提供的服务&ndash;&gt;-->
+<!--    <dubbo:annotation package="com.sun.page.service.impl" />-->
+
+<!--  生成静态网页配置文件  -->
+    <bean id="freemarkerConfig"	class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="/WEB-INF/ftl/" />
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
+
+
+</beans>
